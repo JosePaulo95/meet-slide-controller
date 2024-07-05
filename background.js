@@ -14,15 +14,15 @@
 
 const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
 
-(async () => {
-  if (!(await hasDocument())) {
-    await chrome.offscreen.createDocument({
-      url: OFFSCREEN_DOCUMENT_PATH,
-      reasons: [chrome.offscreen.Reason.DOM_PARSER],
-      justification: 'Parse DOM'
-    });
-  }
-})()
+// (async () => {
+//   if (!(await hasDocument())) {
+//     await chrome.offscreen.createDocument({
+//       url: OFFSCREEN_DOCUMENT_PATH,
+//       reasons: [chrome.offscreen.Reason.DOM_PARSER],
+//       justification: 'Parse DOM'
+//     });
+//   }
+// })()
 
 chrome.action.onClicked.addListener(async () => {
   sendMessageToOffscreenDocument(
