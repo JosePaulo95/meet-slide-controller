@@ -1,15 +1,46 @@
-// Verificar se a URL atual corresponde a https://www.horariodebrasilia.org/
-if (window.location.href === "https://www.horariodebrasilia.org/") {
-    
-    setInterval(() => {
-        const horaElement = document.querySelector('#relogio'); // Substitua pelo seletor correto
-        const horaAtual = horaElement.innerHTML; // Captura o texto do elemento que mostra o horário
-        chrome.runtime.sendMessage({
-            type: 'update-time',
-            target: 'background',
-            data: horaAtual
+const createContainerObserver = () => {
+    return new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            // Verifica se foram adicionados nós e se há um elemento img[data-emoji]
+            const addedNode = mutation.addedNodes[0];
+            if (addedNode) {
+                const news = addedNode.querySelector('img[data-emoji]')?.getAttribute('data-emoji');
+                if (news) {
+                    chrome.runtime.sendMessage({
+                        type: 'update-time',
+                        target: 'background',
+                        data: 'asoijaoijs'
+                    });
+                }
+            }
         });
-    }, 1000);
+    });
+}
+
+const createMeetBodyObserver = () => {
+    return new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node instanceof HTMLElement && node.matches('.hcgJqc')) {
+                    console.log('Elemento desejado detectado:', node);
+                    const containerObserver = createContainerObserver()
+                    containerObserver.observe(node, { childList: true });
+                }
+            });
+        });
+    });
+}
+
+// Verificar se a URL atual corresponde a https://www.horariodebrasilia.org/
+if (window.location.href.includes("meet.google")) {
+    const containerNode = document.querySelector(".hcgJqc");
+    if(!containerNode){
+        const bodyObserver = createMeetBodyObserver()
+        bodyObserver.observe(document.body, { childList: true, subtree: true });
+    }else{
+        const containerObserver = createContainerObserver()
+        containerObserver.observe(targetNode, { childList: true });
+    }
 } else {
     // Se não estiver na página desejada, exibir o container com o último horário recebido
     const container = document.createElement('div');
