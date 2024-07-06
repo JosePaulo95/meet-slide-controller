@@ -9,7 +9,7 @@ const createContainerObserver = () => {
                     chrome.runtime.sendMessage({
                         type: 'update-time',
                         target: 'background',
-                        data: 'asoijaoijs'
+                        data: news
                     });
                 }
             }
@@ -54,9 +54,9 @@ if (window.location.href.includes("meet.google")) {
     document.body.appendChild(container);
 
     // Receber mensagens do background script
-    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function(message) {
         if (message.action === 'atualizarContainer') {
-            container.textContent = `Horário atual: ${message.data}`;
+          container.textContent = `Horário atual: ${message.data}`;
         }
     });
 }
