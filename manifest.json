@@ -13,5 +13,5 @@
       "js": ["contentScript.js"]
     }
   ],
-  "permissions": ["offscreen","tabs", "activeTab"]
+  "permissions": ["tabs", "activeTab"]
 }
