@@ -63,7 +63,9 @@ if (window.location.href.includes("meet.google") || window.location.href.include
             if (remainingTime <= 0) {
                 clearInterval(interval);
                 timerElement.textContent = "00:00";
-                endMeeting();
+                if (window.location.href.includes("meet.google")){
+                    endMeeting();
+                }
                 return;
             }
     
@@ -77,16 +79,35 @@ if (window.location.href.includes("meet.google") || window.location.href.include
         }, 1000);
     }    
 
-    // Função para encerrar a reunião no Meet (supondo que você ainda deseja encerrar a reunião automaticamente)
     function endMeeting() {
-        // Se o temporizador está na aba do Canva, talvez você não queira encerrar a reunião automaticamente
-        // Se necessário, você pode implementar o código para encerrar a reunião se necessário
+        function clickFirstButton() {
+            var firstButton = document.querySelector('[jsname="CQylAd"]');
+            if (firstButton) {
+                firstButton.click();
+                // Espere o popup de confirmação aparecer
+                setTimeout(clickSecondButton, 500); // Ajuste o tempo conforme necessário
+            } else {
+                console.log('Primeiro botão não encontrado');
+            }
+        }
+        
+        // Função para clicar no botão com jsname="V67aGc"
+        function clickSecondButton() {
+            var secondButton = document.querySelector('.VfPpkd-T0kwCb button[jscontroller="soHxf"] span[jsname="V67aGc"]');
+            if (secondButton) {
+                secondButton.click();
+            } else {
+                console.log('Segundo botão não encontrado');
+            }
+        }
+        
+        // Execute a função para clicar no primeiro botão
+        clickFirstButton();
     }
 
     // Adiciona o temporizador à página do Canva
     addTimer();
 
-    const endTimeStr = "11:00"; // Set the desired universal end time
+    const endTimeStr = "11:03"; // Set the desired universal end time
     startTimer(endTimeStr);
-
 }
