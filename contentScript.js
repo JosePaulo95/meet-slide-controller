@@ -193,6 +193,27 @@ try {
 }
 }
 
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function() {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    };
+}
+
 if (window.location.href.includes("meet.google")){
     // Envia mensagem para uma aba específica
     
@@ -206,9 +227,13 @@ if (window.location.href.includes("meet.google")){
         });
     });
 
-    ['mousemove', 'click', 'mousedown', 'mouseup', 'dblclick'].forEach(eventType => {
+    ['click', 'mousedown', 'mouseup', 'dblclick'].forEach(eventType => {
         document.addEventListener(eventType, logAndSendMouseEvent);
     });
+
+    document.addEventListener('mousemove', throttle(function(event) {
+        logAndSendMouseEvent(event);
+    }, 100));
 }
 
 if (window.location.href.includes("canva")){
