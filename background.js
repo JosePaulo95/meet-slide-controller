@@ -2,7 +2,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     chrome.tabs.query({ }, function(tabs) {
         console.log(tabs);
         tabs.filter(t => !t.url.includes("meet")).forEach(tab => {
-          chrome.tabs.sendMessage(tab.id, { action: 'atualizarContainer', data: message.data }, function(response) {
+          chrome.tabs.sendMessage(tab.id, { action: 'key-down', data: message.data }, function(response) {
             if (chrome.runtime.lastError) {
               console.log(tab.url)
               console.log(`Erro ao enviar mensagem para a aba ${tab.id}: ${chrome.runtime.lastError.message}`);
