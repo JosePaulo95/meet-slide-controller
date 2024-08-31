@@ -1,6 +1,44 @@
+if (window.location.href.includes("meet.google")){
+    // Envia mensagem para uma aba específica
+    
+    document.addEventListener('keydown', function(event) {
+        console.log('Tecla pressionada:', event.key);
+
+        chrome.runtime.sendMessage({
+            type: 'hello',
+            target: 'background',
+            data: {key: event.key, code: event.code}
+        });
+    });
+}
+
+if (window.location.href.includes("canva")){
+    console.log("recebido");
+    chrome.runtime.onMessage.addListener(function(message) {
+        console.log(message.data);
+        if (message.action === 'atualizarContainer') {
+          console.log("recebido");
+          console.log(message);
+
+          const event = new KeyboardEvent('keydown', {
+              key: message.data.key,
+              code: message.data.key,
+              keyCode: message.data.code, // Código da tecla para ArrowRight
+              which: message.data.code,
+              bubbles: true,
+              cancelable: true,
+              composed: true
+          });
+          
+          // Dispara o evento no elemento alvo, ou no documento se não houver alvo específico
+          const targetElement = document.querySelector('div.NlMitA') || document;
+          targetElement.dispatchEvent(event);
+        }
+    });
+}
+
 // Verificar se a URL atual corresponde a https://www.horariodebrasilia.org/
 if (window.location.href.includes("meet.google") || window.location.href.includes("canva")) {
-    
     function addTimer() {
         const timerContainer = document.createElement('div');
         timerContainer.style.position = 'fixed';
@@ -109,5 +147,5 @@ if (window.location.href.includes("meet.google") || window.location.href.include
     addTimer();
 
     const endTimeStr = "11:03"; // Set the desired universal end time
-    startTimer(endTimeStr);
+    // startTimer(endTimeStr); //TEMP
 }
