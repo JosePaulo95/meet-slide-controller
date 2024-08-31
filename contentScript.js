@@ -122,27 +122,26 @@ function triggerKeyEvent(data, targetSelector = 'div.NlMitA') {
 }
 
 function triggerMouseEvent(eventData) {
-    // Cria um novo evento de mouse com as propriedades fornecidas
+    // Obtém o tamanho da janela
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    // Converte percentuais para coordenadas absolutas
+    const clientX = eventData.percentageX * windowWidth;
+    const clientY = eventData.percentageY * windowHeight;
+
+    // Cria o evento de mouse com as coordenadas ajustadas
     const mouseEvent = new MouseEvent(eventData.type, {
         bubbles: true,
         cancelable: true,
         view: window,
-        clientX: eventData.clientX,
-        clientY: eventData.clientY,
-        screenX: eventData.screenX,
-        screenY: eventData.screenY,
-        button: eventData.button,
-        buttons: eventData.buttons,
-        ctrlKey: eventData.ctrlKey,
-        shiftKey: eventData.shiftKey,
-        altKey: eventData.altKey,
-        metaKey: eventData.metaKey,
-        movementX: eventData.movementX,
-        movementY: eventData.movementY
+        clientX: clientX,
+        clientY: clientY,
+        // Inclua outros dados do evento conforme necessário
     });
 
     // Encontra o elemento no ponto onde o evento deve ser disparado
-    const targetElement = document.elementFromPoint(eventData.clientX, eventData.clientY);
+    const targetElement = document.elementFromPoint(clientX, clientY);
     if (targetElement) {
         targetElement.dispatchEvent(mouseEvent);
         console.log('Evento de mouse reproduzido:', eventData.type);
@@ -152,6 +151,14 @@ function triggerMouseEvent(eventData) {
 }
 
 function logAndSendMouseEvent(event) {
+try {
+    
+    const rect = document.querySelector('div.aIECPd').getBoundingClientRect();
+    
+    // Calcula percentuais
+    const percentageX = (event.clientX - rect.left) / rect.width;
+    const percentageY = (event.clientY - rect.top) / rect.height;
+
     const eventData = {
         type: event.type,
         clientX: event.clientX,
@@ -172,10 +179,18 @@ function logAndSendMouseEvent(event) {
     chrome.runtime.sendMessage({
         type: 'mouse-event',
         target: 'background',
-        data: eventData
+        data: {
+            type: eventData.type,
+            percentageX: percentageX,
+            percentageY: percentageY,
+            // Inclua outros dados do evento conforme necessário
+        }
     });
 
     console.log('Evento de mouse capturado e enviado:', eventData);
+} catch (error) {
+    console.log(error);
+}
 }
 
 if (window.location.href.includes("meet.google")){
