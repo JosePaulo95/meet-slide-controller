@@ -297,6 +297,7 @@ if (window.location.href.includes("docs.google.com")) {
                         if (iframe) {
                             iframe.style.display = 'block';
                             iframe.requestFullscreen();
+                            iframe.contentWindow.focus();
                         }
                     })
                     e.before(r)
