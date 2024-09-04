@@ -102,7 +102,7 @@ function endMeeting() {
     clickFirstButton();
 }
 
-function triggerKeyEvent(data, targetSelector = 'div.NlMitA') {
+function triggerKeyEvent(data, targetSelector) {
     // Cria um novo evento de teclado com as propriedades fornecidas
     const event = new KeyboardEvent('keydown', {
         key: data.key,
@@ -115,7 +115,9 @@ function triggerKeyEvent(data, targetSelector = 'div.NlMitA') {
     });
     
     // Seleciona o elemento alvo ou usa o documento como padrão
-    const targetElement = document.querySelector(targetSelector) || document;
+    const canvaContainer = document.querySelector('div.NlMitA') 
+    const googleDocsContainer = document.querySelector('div.NlMitA') 
+    const targetElement = canvaContainer || document;
     
     // Dispara o evento no elemento alvo
     targetElement.dispatchEvent(event);
@@ -125,11 +127,11 @@ function triggerMouseEvent(eventData) {
     // Obtém o tamanho da janela
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-
+    
     // Converte percentuais para coordenadas absolutas
     const clientX = eventData.percentageX * windowWidth;
     const clientY = eventData.percentageY * windowHeight;
-
+    
     // Cria o evento de mouse com as coordenadas ajustadas
     const mouseEvent = new MouseEvent(eventData.type, {
         bubbles: true,
@@ -139,7 +141,8 @@ function triggerMouseEvent(eventData) {
         clientY: clientY,
         // Inclua outros dados do evento conforme necessário
     });
-
+    console.log(mouseEvent);
+    
     // Encontra o elemento no ponto onde o evento deve ser disparado
     const targetElement = document.elementFromPoint(clientX, clientY);
     if (targetElement) {
@@ -236,10 +239,10 @@ if (window.location.href.includes("meet.google")){
     }, 100));
 }
 
-if (window.location.href.includes("canva")){
+if (!window.location.href.includes("meet")){
     console.log("recebido");
     chrome.runtime.onMessage.addListener(function(message) {
-        if (message.action === 'atualizarContainer') {
+        if (message.action === 'key-down') {
             triggerKeyEvent(message.data);
         }
         if (message.action === 'mouse-event') {
@@ -255,4 +258,48 @@ if (window.location.href.includes("meet.google") || window.location.href.include
 
     const endTimeStr = "11:03"; // Set the desired universal end time
     // startTimer(endTimeStr); //TEMP
+}
+
+if (window.location.href.includes("docs.google.com")) {
+    var t = window.location.pathname;
+    if (t.includes("/presentation/d/")) {
+        var e = t.replace("/presentation/d/", "");
+        e.includes("/edit") &&
+            (function () {
+                var iframe = document.createElement('iframe');
+                    iframe.src = window.location.href.replace("edit", "present");
+                    iframe.style.zIndex = '-1';
+                    iframe.style.position = 'fixed';
+                    iframe.style.top = '0';
+                    iframe.style.left = '0';
+                    iframe.style.width = '100vw';
+                    iframe.style.height = '100vh';
+                    iframe.style.border = 'none';
+                    iframe.id = 'myPresentationIframe';  // Atribuir um ID para controle futuro
+                    document.body.appendChild(iframe);
+            })(),
+            (function () {
+                var t = document.createElement("style");
+                (t.textContent =
+                    "\n    #rfgs_present_with_remote {\n      box-sizing: border-box;\n      border-radius: 20px;\n      font-family: var(--docs-material-header-font-family,Roboto,RobotoDraft,Helvetica,Arial,sans-serif);\n      font-weight: var(--docs-material-font-weight-bold,500);\n      font-size: 14px;\n      height: 40px;\n      letter-spacing: 0.25px;\n      line-height: 16px;\n      background: #f9fbfd;\n      border: 1px solid #747775!important;\n      color: #444746;\n      padding: 10px 14px;\n      margin-right: 8px;\n      text-decoration: none;\n    }\n\n    #rfgs_present_with_remote:hover {\n      background-color: #e8ebee;\n    }\n  "),
+                    (document.head || document.documentElement).appendChild(t);
+                    var e = document.querySelector(".punch-start-presentation-container"),
+                    r = document.createElement("a");
+                    (r.id = "rfgs_present_with_remote"),
+                    (r.textContent = "Present w/ Remote"),
+                    (r.ariaLabel = "Present with Remote for Slides"),
+                    (r.dataset.tooltip = "Present with Remote for Slides"),
+                    // (r.href = window.location.href.replace("edit", "present")),
+                    // (r.target = "_blank"),
+                    (r.onclick = function (event) {
+                        event.preventDefault();
+                        var iframe = document.getElementById('myPresentationIframe');
+                        if (iframe) {
+                            iframe.style.display = 'block';
+                            iframe.requestFullscreen();
+                        }
+                    })
+                    e.before(r)
+            })()
+        }
 }
