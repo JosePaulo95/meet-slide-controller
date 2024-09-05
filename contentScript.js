@@ -102,23 +102,59 @@ function endMeeting() {
     clickFirstButton();
 }
 
+function convertKeyToArrow(key) {
+    const arrowKeys = {
+        "ArrowLeft": 37,
+        "ArrowRight": 39,
+        "ArrowUp": 38,
+        "ArrowDown": 40
+    };
+
+    // Verifica se a key contém alguma das direções e retorna a seta correspondente e o código
+    if (key.includes("Left")) {
+        return { key: "ArrowLeft", code: arrowKeys["ArrowLeft"] };
+    }
+    if (key.includes("Right")) {
+        return { key: "ArrowRight", code: arrowKeys["ArrowRight"] };
+    }
+    if (key.includes("Up")) {
+        return { key: "ArrowUp", code: arrowKeys["ArrowUp"] };
+    }
+    if (key.includes("Down")) {
+        return { key: "ArrowDown", code: arrowKeys["ArrowDown"] };
+    }
+    // Se não corresponder a nenhuma seta, retorna null
+    return null;
+}
+
 function triggerKeyEvent(data, targetSelector) {
+    console.log(data);
     // Cria um novo evento de teclado com as propriedades fornecidas
     const event = new KeyboardEvent('keydown', {
-        key: data.key,
-        code: data.key,
-        keyCode: data.code,  // Código da tecla (por exemplo, ArrowRight)
-        which: data.code,
+        key: convertKeyToArrow(data.key).key,
+        code: convertKeyToArrow(data.key).key,
+        keyCode: convertKeyToArrow(data.key).code,  // Código da tecla (por exemplo, ArrowRight)
+        which: convertKeyToArrow(data.key).code,
         bubbles: true,
         cancelable: true,
-        composed: true
+        composed: true,
+        repeat: false,
+        ctrlKey: false,
+        shiftKey: false,
+        altKey: false,
+        metaKey: false
     });
     
     // Seleciona o elemento alvo ou usa o documento como padrão
     const canvaContainer = document.querySelector('div.NlMitA') 
-    const googleDocsContainer = document.querySelector('div.NlMitA') 
-    const targetElement = canvaContainer || document;
-    
+
+    var gdocs_iframe = document.getElementById('myPresentationIframe');
+    var googleDocsContainer = gdocs_iframe ? (gdocs_iframe.contentDocument || gdocs_iframe.contentWindow?.document)?.querySelector('body.punch-viewer-body.docsCommonWiz') : null;
+
+    const targetElement = canvaContainer || googleDocsContainer || document;
+
+    console.log(event);
+
     // Dispara o evento no elemento alvo
     targetElement.dispatchEvent(event);
 }
@@ -190,7 +226,7 @@ try {
         }
     });
 
-    console.log('Evento de mouse capturado e enviado:', eventData);
+    // console.log('Evento de mouse capturado e enviado:', eventData);
 } catch (error) {
     console.log(error);
 }
@@ -246,7 +282,7 @@ if (!window.location.href.includes("meet")){
             triggerKeyEvent(message.data);
         }
         if (message.action === 'mouse-event') {
-            triggerMouseEvent(message.data)
+            // triggerMouseEvent(message.data)
         }
     });
 }

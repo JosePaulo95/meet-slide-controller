@@ -1,4 +1,5 @@
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if(message.type === "hello")
     chrome.tabs.query({ }, function(tabs) {
         console.log(tabs);
         tabs.filter(t => !t.url.includes("meet")).forEach(tab => {
