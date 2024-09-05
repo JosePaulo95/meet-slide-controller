@@ -294,6 +294,7 @@ if (window.location.href.includes("docs.google.com")) {
                     (r.onclick = function (event) {
                         event.preventDefault();
                         var iframe = document.getElementById('myPresentationIframe');
+                        iframe.src = window.location.href.replace("edit", "present");
                         if (iframe) {
                             iframe.style.display = 'block';
                             iframe.requestFullscreen();
