@@ -282,7 +282,7 @@ if (!window.location.href.includes("meet")){
             triggerKeyEvent(message.data);
         }
         if (message.action === 'mouse-event') {
-            // triggerMouseEvent(message.data)
+            triggerMouseEvent(message.data)
         }
     });
 }
