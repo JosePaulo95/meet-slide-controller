@@ -192,7 +192,7 @@ function triggerMouseEvent(eventData) {
 function logAndSendMouseEvent(event) {
 try {
     
-    const rect = document.querySelector('div.aIECPd').getBoundingClientRect();
+    const rect = document.querySelector('div.P245vb').getBoundingClientRect();
     
     // Calcula percentuais
     const percentageX = (event.clientX - rect.left) / rect.width;
