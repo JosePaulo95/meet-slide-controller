@@ -2,7 +2,7 @@ function addTimer() {
     const timerContainer = document.createElement('div');
     timerContainer.style.position = 'fixed';
     timerContainer.style.top = '1px';     
-    timerContainer.style.left = '5px';  // Corrected to align with the top-right corner
+    timerContainer.style.right = '5px';  // Corrected to align with the top-right corner
     timerContainer.style.color = 'black';
     timerContainer.style.backgroundColor = 'rgba(256,256,256,0.7)';
     timerContainer.style.border = '1px solid black';
@@ -26,8 +26,8 @@ function addTimer() {
     document.body.appendChild(timerContainer);
 
     timerContainer.addEventListener('mouseenter', () => {
-        // timerContainer.style.opacity = '0';
-        // timerContainer.style.pointerEvents = 'none'; 
+        timerContainer.style.opacity = '0';
+        timerContainer.style.pointerEvents = 'none'; 
     });
     
     timerContainer.addEventListener('mouseleave', () => {
@@ -102,6 +102,30 @@ function endMeeting() {
     clickFirstButton();
 }
 
+function drawPoint(clientX, clientY) {
+    // Cria um novo elemento div para representar o ponto
+    const point = document.createElement('div');
+    
+    // Define o estilo do ponto
+    point.style.position = 'absolute';
+    point.style.width = '8px';  // Largura do ponto
+    point.style.height = '8px'; // Altura do ponto
+    point.style.backgroundColor = 'red'; // Cor do ponto
+    point.style.borderRadius = '50%'; // Faz o ponto ser circular
+    point.style.left = `${clientX - 4}px`; // Ajusta para centralizar o ponto na posição do mouse
+    point.style.top = `${clientY - 4}px`;  // Ajusta para centralizar o ponto na posição do mouse
+    point.style.zIndex = '1000'; // Garante que o ponto fique visível em cima de outros elementos
+    
+    // Adiciona o ponto ao corpo do documento
+    document.body.appendChild(point);
+    
+    // Opcional: remove o ponto após um tempo para evitar acumulação na tela
+    setTimeout(() => {
+        point.remove();
+    }, 1000); // O ponto será removido após 1 segundo
+}
+
+
 function convertKeyToArrow(key) {
     const arrowKeys = {
         "ArrowLeft": 37,
@@ -146,7 +170,7 @@ function triggerKeyEvent(data, targetSelector) {
     });
     
     // Seleciona o elemento alvo ou usa o documento como padrão
-    const canvaContainer = document.querySelector('div.NlMitA') 
+    const canvaContainer = document.querySelector('div.fbzKiw') 
 
     var gdocs_iframe = document.getElementById('myPresentationIframe');
     var googleDocsContainer = gdocs_iframe ? (gdocs_iframe.contentDocument || gdocs_iframe.contentWindow?.document)?.querySelector('body.punch-viewer-body.docsCommonWiz') : null;
@@ -177,8 +201,10 @@ function triggerMouseEvent(eventData) {
         clientY: clientY,
         // Inclua outros dados do evento conforme necessário
     });
-    console.log(mouseEvent);
     
+    // if(eventData.type === "mousemove"){
+    //     drawPoint(clientX, clientY)
+    // }
     // Encontra o elemento no ponto onde o evento deve ser disparado
     const targetElement = document.elementFromPoint(clientX, clientY);
     if (targetElement) {
@@ -288,13 +314,13 @@ if (!window.location.href.includes("meet")){
 }
 
 // Verificar se a URL atual corresponde a https://www.horariodebrasilia.org/
-if (window.location.href.includes("meet.google") || window.location.href.includes("canva")) {
+// if (!window.location.href.includes("meet.google")) {
     // Adiciona o temporizador à página do Canva
     addTimer();
 
-    const endTimeStr = "11:03"; // Set the desired universal end time
-    // startTimer(endTimeStr); //TEMP
-}
+    const endTimeStr = "15:30"; // Set the desired universal end time
+    startTimer(endTimeStr); //TEMP
+// }
 
 if (window.location.href.includes("docs.google.com")) {
     var t = window.location.pathname;
